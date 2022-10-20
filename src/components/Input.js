@@ -11,6 +11,7 @@ export default styled.input`
   border-radius: 4px;
   padding: 0 14px;
   font-size: 16px;
+  appearance: none;
 
   &:focus {
     border: 2px solid ${({ theme }) => theme.colors.primary.main}
