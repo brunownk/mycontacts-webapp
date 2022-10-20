@@ -26,7 +26,7 @@ export const Header = styled.header`
   align-items: center;
   justify-content: space-between;
   margin-top: 32px;
-
+  margin-bottom: 24px;
 
   > strong {
     font-size: 24px;
@@ -50,7 +50,6 @@ export const Header = styled.header`
 `;
 
 export const ListHeader = styled.header`
-  margin-top: 24px;
   margin-bottom: 8px;
 
   button {
