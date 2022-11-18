@@ -11,4 +11,18 @@ export const Container = styled.div`
     display: block;
     margin-top: 8px;
   }
+
+  .form-item {
+    position: relative;
+
+    .loader {
+      width: fit-content;
+      height: fit-content;
+      position: absolute;
+      top: 0px;
+      bottom: 0px;
+      margin: auto 0;
+      right: 16px;
+    }
+  }
 `;
