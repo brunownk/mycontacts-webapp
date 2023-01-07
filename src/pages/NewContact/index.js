@@ -13,8 +13,6 @@ export default function NewContact() {
         category_id: formData.categoryId,
       };
 
-      console.log(contact);
-
       await ContactsServices.creactContact(contact);
 
       toast({
