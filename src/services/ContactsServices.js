@@ -1,24 +1,33 @@
 import HttpClient from './utils/HttpClient';
+import ContactMapper from './mappers/ContactMapper';
 
 class ContactsServices {
   constructor() {
     this.httpClient = new HttpClient('http://localhost:4000');
   }
 
-  listContacts(orderBy = 'asc') {
-    return this.httpClient.get(`/contacts/?orderBy=${orderBy}`);
+  async listContacts(orderBy = 'asc') {
+    const contacts = await this.httpClient.get(`/contacts/?orderBy=${orderBy}`);
+
+    return contacts.map(ContactMapper.toDomain);
   }
 
-  getContanctById(id) {
-    return this.httpClient.get(`/contacts/${id}`);
+  async getContanctById(id) {
+    const contact = await this.httpClient.get(`/contacts/${id}`);
+
+    return ContactMapper.toDomain(contact);
   }
 
   creactContact(contact) {
-    return this.httpClient.post('/contacts', { body: contact });
+    const body = ContactMapper.toPersistence(contact);
+
+    return this.httpClient.post('/contacts', { body });
   }
 
   updateContact(id, contact) {
-    return this.httpClient.put(`/contacts/${id}`, { body: contact });
+    const body = ContactMapper.toPersistence(contact);
+
+    return this.httpClient.put(`/contacts/${id}`, { body });
   }
 
   deleteContact(id) {
