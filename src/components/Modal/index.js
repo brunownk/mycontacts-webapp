@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+
+import useAnimatedUnmont from '../../hooks/useAnimatedUnmont';
 
 import Button from '../Button';
 import ReactPortal from '../ReactPortal';
@@ -17,25 +18,7 @@ export default function Modal({
   onCancel,
   onConfirm,
 }) {
-  const [shouldRender, setShouldRender] = useState(visible);
-
-  useEffect(() => {
-    if (visible === true) {
-      setShouldRender(true);
-    }
-
-    let timeoutId;
-
-    if (visible === false) {
-      timeoutId = setTimeout(() => {
-        setShouldRender(false);
-      }, 300);
-    }
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [visible]);
+  const { shouldRender, animatedElementRef } = useAnimatedUnmont(visible);
 
   if (!shouldRender) {
     return null;
@@ -43,7 +26,7 @@ export default function Modal({
 
   return (
     <ReactPortal containerId="modal-root">
-      <Overlay isLeaving={!visible}>
+      <Overlay ref={animatedElementRef} isLeaving={!visible}>
         <Container danger={danger} isLeaving={!visible}>
           <h1>{title}</h1>
 

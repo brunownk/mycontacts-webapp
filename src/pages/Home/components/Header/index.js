@@ -31,7 +31,7 @@ export default function Header({
 }
 
 Header.propTypes = {
-  hasError: PropTypes.string.isRequired,
+  hasError: PropTypes.bool.isRequired,
   qtyOfContacts: PropTypes.number.isRequired,
   qtyOfFilteredContacts: PropTypes.number.isRequired,
 };
