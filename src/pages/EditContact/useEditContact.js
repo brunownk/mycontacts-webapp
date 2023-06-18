@@ -28,7 +28,7 @@ export default function useEditContact() {
       } catch {
         safeAsyncAction(() => {
           history.push('/');
-          toast({ type: 'danger', text: 'Contato não encontrado ' });
+          toast({ type: 'danger', text: 'Contato não encontrado' });
         });
       }
     }
