@@ -1,5 +1,5 @@
 import {
-  useEffect, useState, useMemo, useCallback,
+  useEffect, useState, useMemo, useCallback, useDeferredValue,
 } from 'react';
 
 import toast from '../../utils/toast';
@@ -8,26 +8,32 @@ import ContactsServices from '../../services/ContactsServices';
 export default function useHome() {
   const [contacts, setContacts] = useState([]);
   const [orderBy, setOrderBy] = useState('asc');
-  const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [contactBeingDeleted, setContactBeingDeleted] = useState(null);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
-  const filteredContacts = useMemo(() => contacts.filter((contact) => (
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase().trim())
-  )), [contacts, searchTerm]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const deferredSearchTerm = useDeferredValue(searchTerm);
 
-  const loadContacts = useCallback(async () => {
+  const filteredContacts = useMemo(() => contacts.filter((contact) => (
+    contact.name.toLowerCase().includes(deferredSearchTerm.toLowerCase().trim())
+  )), [contacts, deferredSearchTerm]);
+
+  const loadContacts = useCallback(async (signal) => {
     try {
       setIsLoading(true);
 
-      const contactsList = await ContactsServices.listContacts(orderBy);
+      const contactsList = await ContactsServices.listContacts(orderBy, signal);
 
       setHasError(false);
       setContacts(contactsList);
-    } catch {
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        return;
+      }
+
       setHasError(true);
       setContacts([]);
     } finally {
@@ -36,7 +42,13 @@ export default function useHome() {
   }, [orderBy]);
 
   useEffect(() => {
-    loadContacts();
+    const controller = new AbortController();
+
+    loadContacts(controller.signal);
+
+    return () => {
+      controller.abort();
+    };
   }, [loadContacts]);
 
   function handleToggleOrderBy() {
